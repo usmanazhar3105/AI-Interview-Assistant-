@@ -4,13 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Mic, Sparkles, Square } from 'lucide-react'
 
-// Type declarations for Web Speech API
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition
-    webkitSpeechRecognition: typeof SpeechRecognition
-  }
-}
+
 
 interface VoiceRecorderProps {
   onTranscription?: (text: string) => void
@@ -33,7 +27,7 @@ export default function VoiceRecorder({
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
-  const speechRecognitionRef = useRef<SpeechRecognition | null>(null)
+  const speechRecognitionRef = useRef<any>(null)
 
   useEffect(() => {
     // Check for MediaRecorder or SpeechRecognition support
@@ -60,7 +54,7 @@ export default function VoiceRecorder({
         speechRecognitionRef.current.interimResults = true
         speechRecognitionRef.current.lang = 'en-US'
 
-        speechRecognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+        speechRecognitionRef.current.onresult = (event: any) => {
           let finalTranscript = ''
           for (let i = event.resultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
@@ -72,7 +66,7 @@ export default function VoiceRecorder({
           }
         }
 
-        speechRecognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+        speechRecognitionRef.current.onerror = (event: any) => {
           console.error('Speech recognition error:', event.error)
           setError(`Speech recognition error: ${event.error}`)
         }
