@@ -4,6 +4,14 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Mic, Sparkles, Square } from 'lucide-react'
 
+// Type declarations for Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition
+    webkitSpeechRecognition: typeof SpeechRecognition
+  }
+}
+
 interface VoiceRecorderProps {
   onTranscription?: (text: string) => void
   onRecordingComplete?: (audioBlob: Blob) => void
@@ -25,7 +33,7 @@ export default function VoiceRecorder({
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
-  const speechRecognitionRef = useRef<any>(null)
+  const speechRecognitionRef = useRef<SpeechRecognition | null>(null)
 
   useEffect(() => {
     // Check for MediaRecorder or SpeechRecognition support
@@ -44,14 +52,15 @@ export default function VoiceRecorder({
 
   const startWebSpeechRecording = () => {
     try {
-      const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition
-      if (SpeechRecognition) {
-        speechRecognitionRef.current = new SpeechRecognition()
+      // Use type assertion to handle browser compatibility
+      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      if (SpeechRecognitionConstructor) {
+        speechRecognitionRef.current = new SpeechRecognitionConstructor()
         speechRecognitionRef.current.continuous = true
         speechRecognitionRef.current.interimResults = true
         speechRecognitionRef.current.lang = 'en-US'
 
-        speechRecognitionRef.current.onresult = (event: any) => {
+        speechRecognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
           let finalTranscript = ''
           for (let i = event.resultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
@@ -63,7 +72,7 @@ export default function VoiceRecorder({
           }
         }
 
-        speechRecognitionRef.current.onerror = (event: any) => {
+        speechRecognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
           console.error('Speech recognition error:', event.error)
           setError(`Speech recognition error: ${event.error}`)
         }
