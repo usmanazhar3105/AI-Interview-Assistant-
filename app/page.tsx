@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react'
 import InterviewSetup from '@/components/InterviewSetup'
 import InterviewSession from '@/components/InterviewSession'
+import ReviewSession from '@/components/ReviewSession'
+import ReviewList from '@/components/ReviewList'
 import { InterviewType, InterviewRole } from '@/types/interview'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Home() {
   const [isInterviewStarted, setIsInterviewStarted] = useState(false)
+  const [currentView, setCurrentView] = useState<'main' | 'interview' | 'review-form' | 'review-list'>('main')
   const [interviewConfig, setInterviewConfig] = useState<{
     type: InterviewType
     role: InterviewRole
@@ -21,11 +24,25 @@ export default function Home() {
   }) => {
     setInterviewConfig(config)
     setIsInterviewStarted(true)
+    setCurrentView('interview')
   }
 
   const endInterview = () => {
     setIsInterviewStarted(false)
     setInterviewConfig(null)
+    setCurrentView('main')
+  }
+
+  const goToReviewForm = () => {
+    setCurrentView('review-form')
+  }
+
+  const goToReviewList = () => {
+    setCurrentView('review-list')
+  }
+
+  const goToMain = () => {
+    setCurrentView('main')
   }
 
   return (
@@ -115,7 +132,7 @@ export default function Home() {
           >
             <div className="w-32 h-32 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-3xl shadow-2xl shadow-cyan-500/25 transform rotate-3 hover:rotate-0 transition-transform duration-500">
               <div className="w-full h-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-3xl flex items-center justify-center transform -rotate-3">
-                <div className="text-4xl font-bold text-white">🎯</div>
+                <div className="text-4xl font-bold text-white"></div>
               </div>
             </div>
             {/* 3D shadow */}
@@ -129,7 +146,7 @@ export default function Home() {
             className="text-6xl md:text-7xl font-black mb-6"
           >
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              AI Interview
+              AI Interview 
             </span>
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-400 bg-clip-text text-transparent">
@@ -172,11 +189,39 @@ export default function Home() {
               </motion.div>
             ))}
           </motion.div>
+
+          {/* Review Navigation */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3, duration: 0.8 }}
+            className="flex flex-wrap justify-center gap-4 mb-8"
+          >
+            <motion.button
+              onClick={goToReviewList}
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl text-white font-semibold shadow-lg shadow-green-500/25 transform hover:rotate-1 transition-all duration-300 flex items-center gap-2"
+            >
+              <span className="text-lg">⭐</span>
+              View Reviews
+            </motion.button>
+            
+            <motion.button
+              onClick={goToReviewForm}
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-2xl text-white font-semibold shadow-lg shadow-orange-500/25 transform hover:rotate-1 transition-all duration-300 flex items-center gap-2"
+            >
+              <span className="text-lg">✍️</span>
+              Write Review
+            </motion.button>
+          </motion.div>
         </motion.div>
 
         {/* Main Content */}
         <AnimatePresence mode="wait">
-          {!isInterviewStarted ? (
+          {currentView === 'main' && (
             <motion.div
               key="setup"
               initial={{ opacity: 0, scale: 0.9, y: 50 }}
@@ -186,7 +231,9 @@ export default function Home() {
             >
               <InterviewSetup onStartInterview={startInterview} />
             </motion.div>
-          ) : (
+          )}
+          
+          {currentView === 'interview' && (
             <motion.div
               key="active"
               initial={{ opacity: 0, x: 50, rotateY: 15 }}
@@ -198,6 +245,34 @@ export default function Home() {
                 config={interviewConfig!}
                 onEndInterview={endInterview}
               />
+            </motion.div>
+          )}
+          
+          {currentView === 'review-form' && (
+            <motion.div
+              key="review-form"
+              initial={{ opacity: 0, scale: 0.9, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: -50 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <ReviewSession 
+                onBack={goToMain}
+                interviewType={interviewConfig?.type}
+                interviewRole={interviewConfig?.role}
+              />
+            </motion.div>
+          )}
+          
+          {currentView === 'review-list' && (
+            <motion.div
+              key="review-list"
+              initial={{ opacity: 0, scale: 0.9, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: -50 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <ReviewList onBack={goToMain} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -235,7 +310,7 @@ export default function Home() {
                 transition={{ delay: 1.9, duration: 0.6 }}
                 className="space-y-3 text-gray-300"
               >
-                <p className="text-lg font-semibold text-cyan-400">SE BATCH 24</p>
+                <p className="text-lg font-semibold text-cyan-400">FAST SE BATCH 24</p>
                 
                 <div className="flex flex-wrap justify-center gap-6 mt-6">
                   <motion.a
@@ -266,7 +341,7 @@ export default function Home() {
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                   >
                     <span>👥</span>
-                    <span>Facebook Clone</span>
+                    <span>Facebook </span>
                   </motion.a>
                 </div>
               </motion.div>

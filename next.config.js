@@ -5,6 +5,7 @@ const nextConfig = {
     GROK_API_URL: process.env.GROK_API_URL,
     ASSEMBLYAI_API_KEY: process.env.ASSEMBLYAI_API_KEY,
     ASSEMBLYAI_API_URL: process.env.ASSEMBLYAI_API_URL,
+    JSONBIN_API_KEY: process.env.JSONBIN_API_KEY,
   },
 }
 
