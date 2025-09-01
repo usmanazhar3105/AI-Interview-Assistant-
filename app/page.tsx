@@ -201,6 +201,89 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Developer Footer */}
+        <motion.footer
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
+          className="mt-20 pb-8"
+        >
+          <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-8 shadow-2xl">
+            <div className="text-center">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 1.7, duration: 0.5, type: "spring" }}
+                className="w-20 h-20 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-cyan-500/25"
+              >
+                <span className="text-2xl">👨‍💻</span>
+              </motion.div>
+              
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.8, duration: 0.6 }}
+                className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent mb-4"
+              >
+                Developed by Usman Azhar
+              </motion.h3>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.9, duration: 0.6 }}
+                className="space-y-3 text-gray-300"
+              >
+                <p className="text-lg font-semibold text-cyan-400">SE BATCH 24</p>
+                
+                <div className="flex flex-wrap justify-center gap-6 mt-6">
+                  <motion.a
+                    href="mailto:i243105@isb.nu.edu.pk"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-white font-medium shadow-lg hover:shadow-red-500/25 transition-all duration-300"
+                  >
+                    <span>📧</span>
+                    <span>i243105@isb.nu.edu.pk</span>
+                  </motion.a>
+                  
+                  <motion.a
+                    href="https://instagram.com/usm44n._"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-medium shadow-lg hover:shadow-pink-500/25 transition-all duration-300"
+                  >
+                    <span>📷</span>
+                    <span>@usm44n._</span>
+                  </motion.a>
+                  
+                  <motion.a
+                    href="https://facebook.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  >
+                    <span>👥</span>
+                    <span>Facebook Clone</span>
+                  </motion.a>
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.1, duration: 0.6 }}
+                className="mt-6 pt-6 border-t border-gray-700/50"
+              >
+                <p className="text-gray-400 text-sm">
+                  Built with ❤️ using Next.js, TypeScript, and AI Technology
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </motion.footer>
       </div>
     </div>
   )
