@@ -20,11 +20,28 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
   const [isRecording, setIsRecording] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(true)
   const [feedback, setFeedback] = useState<Feedback | null>(null)
   const [sessionStatus, setSessionStatus] = useState<'active' | 'completed' | 'paused'>('active')
   const [startTime] = useState(new Date())
   
   const audioRef = useRef<HTMLAudioElement>(null)
+
+  // Initialize voices for speech synthesis (especially important for mobile)
+  useEffect(() => {
+    const initializeVoices = () => {
+      if ('speechSynthesis' in window) {
+        // Load voices if not already loaded
+        if (speechSynthesis.getVoices().length === 0) {
+          speechSynthesis.addEventListener('voiceschanged', () => {
+            console.log('Voices loaded:', speechSynthesis.getVoices().length)
+          })
+        }
+      }
+    }
+    
+    initializeVoices()
+  }, [])
 
   // Initialize interview with first question
   useEffect(() => {
@@ -35,7 +52,11 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
       timestamp: new Date(),
     }
     setMessages([initialMessage])
-    speakMessage(initialMessage.content)
+    
+    // Delay speech slightly to ensure voices are loaded
+    setTimeout(() => {
+      speakMessage(initialMessage.content)
+    }, 500)
   }, [config])
 
   const getInitialQuestion = (config: InterviewConfig): string => {
@@ -54,25 +75,84 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
   }
 
   const speakMessage = async (text: string) => {
-    if (!text) return
+    if (!text || !voiceEnabled) return
     
     setIsAssistantSpeaking(true)
     
     try {
-      // Using browser's built-in speech synthesis
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.rate = 0.9
-      utterance.pitch = 1
-      utterance.volume = 0.8
-      
-      utterance.onend = () => {
+      // Check if speech synthesis is available
+      if ('speechSynthesis' in window) {
+        // Stop any ongoing speech
+        speechSynthesis.cancel()
+        
+        // Wait a bit for cancellation to complete
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        const utterance = new SpeechSynthesisUtterance(text)
+        utterance.rate = 0.9
+        utterance.pitch = 1
+        utterance.volume = 0.8
+        
+        // Try to use a more compatible voice
+        const voices = speechSynthesis.getVoices()
+        if (voices.length > 0) {
+          // Prefer English voices, especially on mobile
+          const englishVoice = voices.find(voice => 
+            voice.lang.startsWith('en') && 
+            (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Samantha'))
+          ) || voices.find(voice => voice.lang.startsWith('en')) || voices[0]
+          
+          if (englishVoice) {
+            utterance.voice = englishVoice
+          }
+        }
+        
+        utterance.onend = () => {
+          setIsAssistantSpeaking(false)
+        }
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event.error)
+          setIsAssistantSpeaking(false)
+          // Fallback to text display with notification
+          toast.error('Voice playback not available. Please read the response.')
+        }
+        
+        // For mobile devices, we need to trigger speech in a user interaction
+        speechSynthesis.speak(utterance)
+        
+        // Fallback timeout for mobile devices
+        setTimeout(() => {
+          if (isAssistantSpeaking) {
+            setIsAssistantSpeaking(false)
+          }
+        }, text.length * 100 + 2000) // Estimate speaking time + buffer
+        
+      } else {
+        // Fallback for browsers without speech synthesis
+        console.warn('Speech synthesis not supported')
         setIsAssistantSpeaking(false)
+        toast.error('Voice playback not supported on this device. Please read the response.')
       }
-      
-      speechSynthesis.speak(utterance)
     } catch (error) {
       console.error('Speech synthesis error:', error)
       setIsAssistantSpeaking(false)
+      toast.error('Voice playback failed. Please read the response.')
+    }
+  }
+
+  const toggleVoice = () => {
+    setVoiceEnabled(!voiceEnabled)
+    if (isAssistantSpeaking) {
+      speechSynthesis.cancel()
+      setIsAssistantSpeaking(false)
+    }
+  }
+
+  const speakLastMessage = () => {
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage && lastMessage.sender === 'assistant') {
+      speakMessage(lastMessage.content)
     }
   }
 
@@ -231,6 +311,9 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
     if (isAssistantSpeaking) {
       speechSynthesis.cancel()
       setIsAssistantSpeaking(false)
+    } else {
+      // If not speaking, try to speak the last assistant message
+      speakLastMessage()
     }
   }
 
@@ -322,7 +405,7 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
           </div>
           
           <div className="h-96 overflow-hidden relative z-10">
-            <MessageList messages={messages} />
+            <MessageList messages={messages} onSpeakMessage={speakMessage} />
           </div>
         </div>
       </motion.div>
@@ -358,6 +441,22 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
               onTranscription={handleRealTimeTranscription}
             />
             
+            {/* Voice Toggle Button */}
+            <motion.button
+              whileHover={{ scale: 1.05, y: -5, rotateY: 5 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleVoice}
+              className={`p-4 rounded-2xl transition-all duration-300 shadow-lg ${
+                voiceEnabled 
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-green-500/25 hover:shadow-green-500/40' 
+                  : 'bg-gradient-to-r from-gray-600 to-gray-700 text-gray-300 hover:from-gray-500 hover:to-gray-600 shadow-gray-500/25'
+              }`}
+              title={voiceEnabled ? 'Voice enabled - Click to disable' : 'Voice disabled - Click to enable'}
+            >
+              {voiceEnabled ? <Volume2 size={24} /> : <VolumeX size={24} />}
+            </motion.button>
+
+            {/* Speak/Stop Button */}
             <motion.button
               whileHover={{ scale: 1.1, y: -5, rotateY: 5 }}
               whileTap={{ scale: 0.95 }}
@@ -365,9 +464,9 @@ export default function InterviewSession({ config, onEndInterview }: InterviewSe
               className={`p-5 rounded-2xl transition-all duration-300 shadow-lg ${
                 isAssistantSpeaking 
                   ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-red-500/25 hover:shadow-red-500/40' 
-                  : 'bg-gradient-to-r from-gray-600 to-gray-700 text-gray-300 hover:from-gray-500 hover:to-gray-600 shadow-gray-500/25'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-cyan-500/25 hover:shadow-cyan-500/40'
               }`}
-              title={isAssistantSpeaking ? 'Stop speaking' : 'Assistant is not speaking'}
+              title={isAssistantSpeaking ? 'Stop speaking' : 'Speak last message'}
             >
               {isAssistantSpeaking ? <VolumeX size={28} /> : <Volume2 size={28} />}
             </motion.button>

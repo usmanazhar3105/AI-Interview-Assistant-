@@ -3,13 +3,14 @@
 import { useEffect, useRef } from 'react'
 import { Message } from '@/types/interview'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Bot, Clock, Sparkles, MessageCircle } from 'lucide-react'
+import { User, Bot, Clock, Sparkles, MessageCircle, Volume2 } from 'lucide-react'
 
 interface MessageListProps {
   messages: Message[]
+  onSpeakMessage?: (text: string) => void
 }
 
-export default function MessageList({ messages }: MessageListProps) {
+export default function MessageList({ messages, onSpeakMessage }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -98,14 +99,29 @@ export default function MessageList({ messages }: MessageListProps) {
                       {message.content}
                     </p>
                     
-                    {/* Timestamp with icon */}
-                    <div className={`flex items-center gap-2 mt-3 ${
+                    {/* Timestamp and actions */}
+                    <div className={`flex items-center justify-between mt-3 ${
                       message.sender === 'user' ? 'text-cyan-100' : 'text-gray-400'
                     }`}>
-                      <Clock className="w-3 h-3" />
-                      <span className="text-xs font-medium">
-                        {formatTime(message.timestamp)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-3 h-3" />
+                        <span className="text-xs font-medium">
+                          {formatTime(message.timestamp)}
+                        </span>
+                      </div>
+                      
+                      {/* Speak button for assistant messages */}
+                      {message.sender === 'assistant' && onSpeakMessage && (
+                        <motion.button
+                          onClick={() => onSpeakMessage(message.content)}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-1 rounded-full bg-gray-700/50 hover:bg-gray-600/50 transition-colors duration-200"
+                          title="Speak this message"
+                        >
+                          <Volume2 className="w-3 h-3 text-gray-300 hover:text-white" />
+                        </motion.button>
+                      )}
                     </div>
                   </div>
                   
