@@ -172,9 +172,9 @@ export default function Home() {
             className="flex flex-wrap justify-center gap-4 mb-8"
           >
             {[
-              { icon: '🎤', text: 'Real-time Voice', color: 'from-cyan-400 to-blue-500' },
-              { icon: '🤖', text: 'AI Feedback', color: 'from-purple-400 to-pink-500' },
-              { icon: '⚡', text: 'Instant Results', color: 'from-blue-400 to-cyan-500' }
+              { icon: '', text: 'Real-time Voice', color: 'from-cyan-400 to-blue-500' },
+              { icon: '', text: 'AI Feedback', color: 'from-purple-400 to-pink-500' },
+              { icon: '', text: 'Instant Results', color: 'from-blue-400 to-cyan-500' }
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -203,7 +203,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl text-white font-semibold shadow-lg shadow-green-500/25 transform hover:rotate-1 transition-all duration-300 flex items-center gap-2"
             >
-              <span className="text-lg">⭐</span>
+              <span className="text-lg"></span>
               View Reviews
             </motion.button>
             
@@ -213,7 +213,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="px-6 py-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-2xl text-white font-semibold shadow-lg shadow-orange-500/25 transform hover:rotate-1 transition-all duration-300 flex items-center gap-2"
             >
-              <span className="text-lg">✍️</span>
+              <span className="text-lg"></span>
               Write Review
             </motion.button>
           </motion.div>
@@ -292,7 +292,7 @@ export default function Home() {
                 transition={{ delay: 1.7, duration: 0.5, type: "spring" }}
                 className="w-20 h-20 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-cyan-500/25"
               >
-                <span className="text-2xl">👨‍💻</span>
+                <span className="text-2xl"></span>
               </motion.div>
               
               <motion.h3
@@ -318,7 +318,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05, y: -2 }}
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl text-white font-medium shadow-lg hover:shadow-red-500/25 transition-all duration-300"
                   >
-                    <span>📧</span>
+                    <span></span>
                     <span>i243105@isb.nu.edu.pk</span>
                   </motion.a>
                   
@@ -329,7 +329,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05, y: -2 }}
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl text-white font-medium shadow-lg hover:shadow-pink-500/25 transition-all duration-300"
                   >
-                    <span>📷</span>
+                    <span>insta: </span>
                     <span>@usm44n._</span>
                   </motion.a>
                   
@@ -340,7 +340,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05, y: -2 }}
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl text-white font-medium shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
                   >
-                    <span>👥</span>
+                    <span></span>
                     <span>Facebook </span>
                   </motion.a>
                 </div>
@@ -353,7 +353,7 @@ export default function Home() {
                 className="mt-6 pt-6 border-t border-gray-700/50"
               >
                 <p className="text-gray-400 text-sm">
-                  Built with ❤️ using Next.js, TypeScript, and AI Technology
+                  Built with  using Next.js, TypeScript, and AI Technology
                 </p>
               </motion.div>
             </div>

@@ -216,7 +216,7 @@ export default function VoiceRecorder({
               transition={{ duration: 2, repeat: Infinity, delay: 0 }}
               className="absolute top-0 left-1/2 transform -translate-x-1/2 text-yellow-300 text-2xl"
             >
-              ✨
+                  
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 0, x: 0 }}
@@ -224,7 +224,7 @@ export default function VoiceRecorder({
               transition={{ duration: 2, repeat: Infinity, delay: 1 }}
               className="absolute top-0 right-0 text-pink-300 text-2xl"
             >
-              🌟
+              
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 0, x: 0 }}
@@ -232,7 +232,7 @@ export default function VoiceRecorder({
               transition={{ duration: 2, repeat: Infinity, delay: 2 }}
               className="absolute top-0 left-0 text-cyan-300 text-2xl"
             >
-              💫
+              
             </motion.div>
           </>
         )}

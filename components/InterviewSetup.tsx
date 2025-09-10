@@ -380,9 +380,9 @@ export default function InterviewSetup({ onStartInterview }: InterviewSetupProps
             
             {/* Button content */}
             <div className="relative z-10 flex items-center gap-3">
-              <span className="text-3xl">🚀</span>
+              <span className="text-3xl"></span>
               Start Interview
-              <span className="text-3xl">⚡</span>
+              <span className="text-3xl"></span>
             </div>
             
             {/* Hover sparkles */}
@@ -391,9 +391,9 @@ export default function InterviewSetup({ onStartInterview }: InterviewSetupProps
               whileHover={{ opacity: 1 }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              <div className="absolute top-2 left-4 text-yellow-300 animate-bounce">✨</div>
-              <div className="absolute top-4 right-6 text-pink-300 animate-bounce delay-100">🌟</div>
-              <div className="absolute bottom-4 left-8 text-cyan-300 animate-bounce delay-200">💫</div>
+              <div className="absolute top-2 left-4 text-yellow-300 animate-bounce"></div>
+              <div className="absolute top-4 right-6 text-pink-300 animate-bounce delay-100"></div>
+              <div className="absolute bottom-4 left-8 text-cyan-300 animate-bounce delay-200"></div>
             </motion.div>
           </motion.button>
           
